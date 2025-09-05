@@ -4,161 +4,88 @@
   <meta charset="UTF-8">
   <title>Anime Themed Authentication</title>
   <style>
-    * {
-      margin: 0; padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+    body { background:#000; color:white; overflow:hidden; transition: background 0.5s, color 0.5s; }
 
-    body {
-      background: #000;
-      color: white;
-      overflow: hidden;
-    }
+    .slideshow { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; }
+    .slideshow img { position:absolute; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity 0.5s ease-in-out; }
+    .slideshow img.active { opacity:1; }
 
-    /* Slideshow container */
-    .slideshow {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: -1;
-    }
-
-    .slideshow img {
-      position: absolute;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity 0.5s ease-in-out;
-    }
-
-    .slideshow img.active {
-      opacity: 1;
-    }
-
-    /* Form container */
     .container {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
+      position:absolute; top:50%; left:50%;
+      transform:translate(-50%, -50%);
       background: rgba(0,0,0,0.7);
-      padding: 40px;
-      border-radius: 12px;
-      text-align: center;
-      width: 350px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.4);
+      padding:40px; border-radius:12px; text-align:center;
+      width:350px; box-shadow:0 0 20px rgba(255,255,255,0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    /* Hover effect for form */
+    .container:hover {
+      transform: translate(-50%, -50%) scale(1.05);
+      box-shadow:0 0 30px rgba(255,255,255,0.7);
     }
 
-    .container h2 {
-      margin-bottom: 20px;
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 6px;
-      outline: none;
-      font-size: 14px;
-    }
-
+    .container h2 { margin-bottom:20px; font-size:24px; font-weight:bold; }
+    input { width:100%; padding:10px; margin:10px 0; border:none; border-radius:6px; outline:none; font-size:14px; }
     .submit-btn {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      background: #ff0044;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s, background 0.3s;
+      width:100%; padding:12px; border:none; border-radius:8px;
+      background:#ff0044; color:white; font-size:16px; font-weight:bold; cursor:pointer;
+      transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
     }
-
+    /* Glow animation */
     .submit-btn:hover {
-      background: #e60039;
-      transform: scale(1.05);
-      text-shadow: 0 0 10px yellow;
+      background:#e60039; transform:scale(1.05);
+      text-shadow:0 0 10px yellow; box-shadow:0 0 15px #ff0044, 0 0 30px #ff66aa;
     }
 
-    .toggle-btn {
-      margin-top: 20px;
-      background: none;
-      border: none;
-      color: cyan;
-      cursor: pointer;
-      font-size: 14px;
-    }
+    .toggle-btn { margin-top:20px; background:none; border:none; color:cyan; cursor:pointer; font-size:14px; }
 
-    /* Special headings */
-    .special-text {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      text-shadow: 0 0 10px red, 0 0 20px orange;
-    }
+    .special-text { font-size:20px; font-weight:bold; margin-bottom:10px; text-shadow:0 0 10px red,0 0 20px orange; }
+    .yokoso { color:#ffcc00; }
+    .oraora { color:#00ffcc; text-shadow:0 0 10px cyan,0 0 20px blue; }
 
-    .yokoso {
-      color: #ffcc00;
-    }
-
-    .oraora {
-      color: #00ffcc;
-      text-shadow: 0 0 10px cyan, 0 0 20px blue;
-    }
-
-    /* Mute button */
     .mute-btn {
-      position: fixed;
-      top: 15px; right: 15px;
-      background: rgba(0,0,0,0.6);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 14px;
+      position:fixed; top:15px; right:15px;
+      background:rgba(0,0,0,0.6); color:white; border:none;
+      padding:10px; border-radius:50%; cursor:pointer; font-size:14px;
     }
 
-    /* JoJo aura intro */
     #jojo-aura {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 120px;
-      font-weight: bold;
-      color: rgba(128, 0, 128, 0.8);
-      text-shadow: 0 0 25px purple, 0 0 50px violet, 0 0 80px magenta;
-      animation: jojoEntrance 3s ease-in-out forwards;
-      z-index: 2000;
-      pointer-events: none;
+      position:fixed; top:50%; left:50%;
+      transform:translate(-50%, -50%);
+      font-size:120px; font-weight:bold;
+      color:rgba(128,0,128,0.8);
+      text-shadow:0 0 25px purple,0 0 50px violet,0 0 80px magenta;
+      animation:jojoEntrance 3s ease-in-out forwards;
+      z-index:2000; pointer-events:none;
     }
 
     @keyframes jojoEntrance {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-      30% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-      60% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
+      0% { opacity:0; transform:translate(-50%,-50%) scale(0.5); }
+      30% { opacity:1; transform:translate(-50%,-50%) scale(1.2); }
+      60% { opacity:1; transform:translate(-50%,-50%) scale(1); }
+      100% { opacity:0; transform:translate(-50%,-50%) scale(1.5); }
+    }
+
+    /* Dark/Light toggle button */
+    #theme-toggle {
+      position:fixed; bottom:20px; right:20px;
+      padding:0.5rem 1rem; background:#fff; color:#000;
+      border:none; border-radius:8px; cursor:pointer; font-weight:bold;
+      z-index:1000; transition: background 0.5s, color 0.5s;
     }
   </style>
 </head>
 <body>
-  <!-- Slideshow -->
   <div class="slideshow">
-    <!-- Bleach -->
     <img src="images/ichigo_hd.jpg" data-type="bleach" class="active">
     <img src="images/aizen_yokoso.png" data-type="bleach">
     <img src="images/4k_muigetsu.jpg" data-type="bleach">
-    <!-- Monster -->
     <img src="images/johan_liebert.jpg" data-type="monster">
     <img src="images/jotaro_hd.jpg" data-type="monster">
     <img src="images/dio_tattoo.jpg" data-type="monster">
   </div>
 
-  <!-- Form -->
   <div class="container" id="form-container">
     <div id="special-text" class="special-text yokoso">Yokoso</div>
     <h2 id="form-title">Login</h2>
@@ -168,11 +95,9 @@
     <button class="toggle-btn" onclick="toggleForm()">Don't have an account? Sign up</button>
   </div>
 
-  <!-- Mute Button -->
   <button class="mute-btn" id="mute-btn">🔊</button>
-
-  <!-- JoJo Aura -->
   <div id="jojo-aura">ゴゴゴゴ</div>
+  <button id="theme-toggle">Toggle Theme</button>
 
   <script>
     const images = document.querySelectorAll('.slideshow img');
@@ -182,9 +107,7 @@
 
     const bleachSound = new Audio("https://www.myinstants.com/media/sounds/bleach-bankai.mp3");
     const monsterSound = new Audio("https://www.myinstants.com/media/sounds/monster-creepy.mp3");
-
-    bleachSound.loop = true;
-    monsterSound.loop = true;
+    bleachSound.loop = true; monsterSound.loop = true;
 
     function showNextImage() {
       const themeImages = Array.from(images).filter(img => img.dataset.type === currentTheme);
@@ -196,49 +119,49 @@
     function startSlideshow() {
       clearInterval(interval);
       const themeImages = Array.from(images).filter(img => img.dataset.type === currentTheme);
-      themeImages.forEach((img, i) => img.classList.toggle('active', i === 0));
-      currentIndex = 0;
-      interval = setInterval(showNextImage, 800); // fast 0.8s switch
+      themeImages.forEach((img,i)=>img.classList.toggle('active',i===0));
+      currentIndex=0;
+      interval=setInterval(showNextImage,800);
     }
 
     function toggleForm() {
       const formTitle = document.getElementById("form-title");
       const specialText = document.getElementById("special-text");
-
-      if (formTitle.innerText === "Login") {
-        formTitle.innerText = "Sign Up";
-        specialText.innerText = "ORA ORA";
-        specialText.className = "special-text oraora";
-        currentTheme = "monster";
-        bleachSound.pause(); monsterSound.play();
+      if(formTitle.innerText==="Login"){
+        formTitle.innerText="Sign Up";
+        specialText.innerText="ORA ORA";
+        specialText.className="special-text oraora";
+        currentTheme="monster";
+        bleachSound.pause(); monsterSound.play().catch(()=>{});
       } else {
-        formTitle.innerText = "Login";
-        specialText.innerText = "Yokoso";
-        specialText.className = "special-text yokoso";
-        currentTheme = "bleach";
-        monsterSound.pause(); bleachSound.play();
+        formTitle.innerText="Login";
+        specialText.innerText="Yokoso";
+        specialText.className="special-text yokoso";
+        currentTheme="bleach";
+        monsterSound.pause(); bleachSound.play().catch(()=>{});
       }
       startSlideshow();
     }
 
-    // Mute button
     const muteBtn = document.getElementById("mute-btn");
-    let muted = false;
-    muteBtn.onclick = () => {
-      muted = !muted;
-      bleachSound.muted = muted;
-      monsterSound.muted = muted;
-      muteBtn.innerText = muted ? "🔇" : "🔊";
-    };
+    let muted=false;
+    muteBtn.onclick=()=>{ muted=!muted; bleachSound.muted=muted; monsterSound.muted=muted; muteBtn.innerText=muted?"🔇":"🔊"; }
 
-    // Start on load
-    window.onload = () => {
+    const themeToggle = document.getElementById("theme-toggle");
+    themeToggle.onclick = () => {
+      if(document.body.style.background==='black' || document.body.style.background===''){
+        document.body.style.background='white'; document.body.style.color='black';
+        themeToggle.style.background='black'; themeToggle.style.color='white';
+      } else {
+        document.body.style.background='black'; document.body.style.color='white';
+        themeToggle.style.background='white'; themeToggle.style.color='black';
+      }
+    }
+
+    window.onload=()=>{
       startSlideshow();
-      bleachSound.play();
-      setTimeout(() => {
-        const aura = document.getElementById("jojo-aura");
-        if (aura) aura.remove();
-      }, 3000);
+      bleachSound.play().catch(()=>{});
+      setTimeout(()=>{ const aura=document.getElementById("jojo-aura"); if(aura) aura.remove(); },3000);
     };
   </script>
 </body>
